@@ -1,38 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: multiplication-app
-  labels:
-    app: multiplication
+  name: java-app
 spec:
-  replicas: 2 # Number of running instances for high availability
+  replicas: 1
   selector:
     matchLabels:
-      app: multiplication
+      app: java-app
   template:
     metadata:
       labels:
-        app: multiplication
+        app: java-app
     spec:
       containers:
-      - name: multiplication-container
-        image: prakashraj007/multiplication-app:latest # Replace with your image name
+      - name: java-app
+        image: prakashraj007/java-app:latest
         ports:
-        - containerPort: 8080 # Port your Java app listens on
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
+        - containerPort: 8080
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: multiplication-service
+  name: java-service
 spec:
-  type: LoadBalancer # Exposes the app to an external IP
+  type: NodePort
   selector:
-    app: multiplication
+    app: java-app
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 80
       targetPort: 8080
+      nodePort: 30007
